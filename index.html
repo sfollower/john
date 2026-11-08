@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>요한복음 2장 영어 암송</title>
+  <meta name="description" content="요한복음 2장 영문 본문 암기 · 낭독 훈련 (1~25절 + 찬송가 40장)">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <!-- 본문 데이터 (같은 폴더). 엑셀 파일이 있으면 엑셀이 우선합니다. -->
+  <script src="data.js"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,.04); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(100,116,139,.35); border-radius: 4px; }
+
+    .blank-input {
+      display: inline-block; text-align: center; font-weight: 700; font-family: inherit;
+      border-bottom: 2px solid #3b82f6; background: rgba(59,130,246,.08);
+      padding: 2px 7px; margin: 2px 3px; border-radius: 5px; outline: none;
+      min-width: 52px; font-size: .95em; transition: all .15s ease;
+    }
+    .blank-input:focus { background: rgba(59,130,246,.18); border-bottom-color: #1d4ed8; box-shadow: 0 0 0 2px rgba(59,130,246,.25); }
+    .blank-input.correct { background: rgba(34,197,94,.16); border-bottom-color: #16a34a; color: #15803d; }
+    .blank-input.wrong { background: rgba(239,68,68,.16); border-bottom-color: #dc2626; color: #b91c1c; }
+
+    .flash-blank-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 52px; padding: 2px 8px; margin: 2px 3px; border-radius: 5px;
+      font-weight: 700; font-size: .94em; cursor: pointer; user-select: none;
+      transition: all .15s ease; box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      background: #f1f5f9; color: #64748b; border: 1px dashed #94a3b8;
+    }
+    .flash-blank-btn.revealed { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+    input[type=range].slider { -webkit-appearance: none; appearance: none; outline: none; border-radius: 9999px; background: #e2e8f0; }
+    input[type=range].slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+      background: #4f46e5; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: pointer;
+    }
+    input[type=range].slider::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 2px solid #fff; cursor: pointer;
+    }
+    .note-grid-ruled { background-image: linear-gradient(#e2e8f0 1px, transparent 1px); background-size: 100% 28px; }
+  </style>
+
+  <style type="text/tailwindcss">
+    .seg { @apply px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1; }
+    .seg.active { @apply bg-white shadow-sm text-indigo-700 font-bold; }
+    .mode-btn { @apply px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition-all flex items-center gap-1 text-[11px] sm:text-xs; }
+    .mode-btn.active { @apply bg-indigo-600 text-white hover:text-white font-black shadow-sm; }
+    .ch-btn { @apply px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold text-[11px] sm:text-sm transition-all flex items-center gap-1; }
+    .ch-btn.active { @apply bg-white text-indigo-700 font-extrabold shadow-sm; }
+    .speed-btn { @apply px-1.5 sm:px-2 py-0.5 rounded bg-slate-100 hover:bg-indigo-50 text-slate-600 font-bold transition; }
+    .speed-btn.active { @apply bg-indigo-600 hover:bg-indigo-600 text-white shadow-sm; }
+    .order-btn { @apply px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-100; }
+    .order-btn.active { @apply bg-white border-indigo-500 text-indigo-700 shadow-sm; }
+    .verse-btn { @apply h-8 sm:h-7 px-2.5 rounded-lg flex items-center justify-center transition-all select-none shadow-sm text-xs; }
+    .tag { @apply text-[11px] font-black px-2 py-1 rounded-md shrink-0 border flex items-center gap-1; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col font-sans select-none">
+
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-2 sm:px-5 py-1.5 sm:py-2.5 flex flex-col gap-1.5 sm:gap-2.5">
+
+      <!-- 타이틀 / 상태 / 재생 범위 -->
+      <div class="flex items-center justify-between gap-1.5 sm:gap-2.5 flex-wrap">
+        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+            <i data-lucide="book-open" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 leading-tight">요한복음2장 영어 암송</h1>
+              <div class="inline-flex items-center gap-1 bg-slate-100 px-1.5 py-0.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-700">
+                <i data-lucide="repeat" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600"></i>
+                <span class="text-[10px] sm:text-[11px]">반복:</span>
+                <select data-repeat-select class="text-[11px] sm:text-xs font-black bg-white border border-slate-300 rounded px-1 py-0.5 text-indigo-700 outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"></select>
+              </div>
+            </div>
+            <p class="hidden sm:block text-[11px] text-slate-400 font-medium">영문 본문 암기 · 낭독 훈련 (1~25절 + 찬송가 40장)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <div class="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] sm:text-[11px] font-semibold text-slate-600">
+            <span id="data-led" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="data-label">불러오는 중...</span>
+          </div>
+          <div class="inline-flex rounded-xl bg-slate-100 p-0.5 border border-slate-300 items-center">
+            <button id="btn-mode-all" class="mode-btn" onclick="setScope('all')" title="모든 구절을 차례대로 재생">
+              <i data-lucide="list-music" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>전체재생</span>
+            </button>
+            <button id="btn-mode-select" class="mode-btn active" onclick="setScope('select')" title="원하는 구절만 골라 세트로 반복 재생">
+              <i data-lucide="check-square" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>선택재생</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모바일 자동재생 안내 -->
+      <div id="autoplay-banner" class="hidden w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-3 py-1.5 rounded-xl shadow-md flex items-center justify-between gap-2 text-xs animate-pulse cursor-pointer" onclick="playCurrent()">
+        <div class="flex items-center gap-1.5">
+          <div class="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center shrink-0"><i data-lucide="play" class="w-3 h-3 fill-white"></i></div>
+          <span class="font-bold text-[11px] sm:text-xs">터치하면 성경 낭독이 재생됩니다.</span>
+        </div>
+        <span class="px-2 py-0.5 rounded bg-white text-indigo-700 font-extrabold text-[10px] sm:text-[11px] shrink-0">지금 듣기</span>
+      </div>
+
+      <!-- 구절 선택 바 -->
+      <div class="w-full bg-slate-100/90 rounded-xl sm:rounded-2xl p-1 sm:p-2 border border-slate-200">
+        <div id="verse-picker" class="flex flex-col gap-1 w-full"></div>
+      </div>
+
+      <!-- 이전/다음 네비게이션 -->
+      <div class="flex items-center justify-between w-full gap-1.5 bg-slate-50 border border-slate-200 p-1 sm:p-1.5 rounded-xl">
+        <button onclick="prevVerse()" class="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 flex items-center gap-1 shrink-0" title="이전 구절 (←)">
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i><span>이전</span>
+        </button>
+
+        <div class="flex items-center gap-1 sm:gap-2 px-1 truncate justify-center flex-1">
+          <span id="badge-verse" class="px-1.5 sm:px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-black bg-indigo-100 text-indigo-800 shrink-0"></span>
+          <span data-track-pos class="text-[10px] sm:text-xs text-slate-400 font-mono shrink-0"></span>
+          <h2 id="verse-title" class="text-xs sm:text-sm font-bold text-slate-900 truncate"></h2>
+        </div>
+
+        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <div class="flex items-center bg-white border border-slate-200 p-0.5 rounded-xl shadow-sm gap-0.5">
+            <button id="btn-order-toggle" onclick="setOrder(S.order === 'seq' ? 'rand' : 'seq', true)" class="h-7 sm:h-8 px-1.5 sm:px-2 rounded-lg bg-slate-100 hover:bg-slate-200 active:scale-95 text-indigo-700 font-extrabold text-[10px] sm:text-[11px] flex items-center justify-center gap-0.5 sm:gap-1 transition border border-slate-200"></button>
+            <button id="btn-play-toggle" onclick="togglePlay()" class="h-7 sm:h-8 min-w-[72px] sm:min-w-[96px] px-2.5 sm:px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition" title="재생 / 일시정지 (Space)"></button>
+            <button onclick="stopAudio()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-700 hover:bg-slate-800 active:scale-95 text-white flex items-center justify-center transition" title="정지">
+              <i data-lucide="square" class="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white"></i>
+            </button>
+          </div>
+          <button onclick="nextVerse()" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 min-h-[30px] sm:min-h-[36px] rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold text-xs sm:text-sm flex items-center gap-1 shadow-md shadow-indigo-500/25 active:scale-95 transition-all shrink-0" title="다음 구절 (→)">
+            <span>다음</span><i data-lucide="arrow-right-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 flex justify-center items-start p-1 sm:p-4">
+    <div class="w-full bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm overflow-hidden max-w-7xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+
+        <!-- 좌측: 그림 + 플레이어 -->
+        <div class="lg:col-span-5 flex flex-col bg-slate-50/50 p-2 sm:p-5 gap-2.5 sm:gap-4">
+
+          <!-- 그림보기 -->
+          <section class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-4 border border-slate-200 shadow-sm flex flex-col gap-1.5 sm:gap-2.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <i data-lucide="image" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                </div>
+                <div>
+                  <h3 class="text-[11px] sm:text-xs font-bold text-slate-800">그림보기</h3>
+                  <p id="image-filename" class="text-[10px] sm:text-[11px] text-slate-400 font-mono truncate max-w-[120px] sm:max-w-[170px]"></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-1.5 flex-wrap justify-end">
+                <div class="flex items-center bg-slate-100 rounded-lg p-0.5 border border-slate-200 text-slate-600">
+                  <button onclick="zoom('inline', .2)" class="p-1 hover:text-indigo-600 hover:bg-white rounded" title="확대"><i data-lucide="zoom-in" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i></button>
+                  <button onclick="zoom('inline', -.2)" class="p-1 hover:text-indigo-600 hover:bg-white rounded" title="축소"><i data-lucide="zoom-out" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i></button>
+                  <span id="inline-zoom-percent" class="px-1 sm:px-1.5 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold text-indigo-700">100%</span>
+                </div>
+                <button onclick="resetZoom('inline')" class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 text-[10px] sm:text-[11px] font-bold flex items-center gap-0.5 sm:gap-1 border border-slate-200 transition" title="원래 크기로">
+                  <i data-lucide="rotate-ccw" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-500"></i><span>기본</span>
+                </button>
+                <button onclick="openModal()" class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] sm:text-[11px] font-bold flex items-center gap-0.5 sm:gap-1 border border-indigo-200 transition" title="크게 보기">
+                  <i data-lucide="maximize-2" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5"></i><span>크게보기</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="inline-viewport" class="relative w-full min-h-[200px] max-h-[80vh] sm:max-h-[75vh] bg-slate-950/5 rounded-lg sm:rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center cursor-default" style="touch-action: pan-y;">
+              <div class="w-full flex items-center justify-center p-0.5 sm:p-2 pointer-events-none">
+                <img id="inline-image" alt="성경 삽화" decoding="async" class="hidden w-auto h-auto max-w-full max-h-[75vh] sm:max-h-[70vh] object-contain rounded transition-transform duration-75 pointer-events-none will-change-transform">
+                <div id="image-placeholder" class="text-center p-6 sm:p-8">
+                  <i data-lucide="image-off" class="w-8 h-8 sm:w-10 sm:h-10 mx-auto text-slate-300 mb-1.5"></i>
+                  <p class="text-[11px] sm:text-xs text-slate-500 font-bold">이미지 파일 없음</p>
+                </div>
+              </div>
+            </div>
+
+            <p id="zoom-guide" class="text-center text-slate-500 text-[10px] sm:text-[11px] font-medium">확대하면 드래그로 이동할 수 있습니다 (휠/버튼 줌)</p>
+          </section>
+
+          <!-- 낭독 플레이어 -->
+          <section class="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-slate-200 shadow-sm flex flex-col gap-2.5 sm:gap-3.5">
+            <div class="flex flex-col gap-2 border-b border-slate-100 pb-2 sm:pb-3">
+              <div class="flex items-center justify-between flex-wrap gap-1.5">
+                <div class="flex items-center gap-1.5">
+                  <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center"><i data-lucide="volume-2" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i></div>
+                  <span class="text-[11px] sm:text-xs font-bold text-indigo-700 tracking-wider">성경 낭독 플레이어</span>
+                  <span data-track-pos class="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-bold"></span>
+                </div>
+                <div class="inline-flex rounded-xl bg-slate-100 p-0.5 sm:p-1 border border-slate-200">
+                  <button id="btn-ch-a1" class="ch-btn active" onclick="setChannel('a1')"><i data-lucide="scissors" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>끊어 읽기</span></button>
+                  <button id="btn-ch-a2" class="ch-btn" onclick="setChannel('a2')"><i data-lucide="sparkles" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>자연스러운 읽기</span></button>
+                </div>
+              </div>
+              <div class="bg-indigo-50/60 rounded-xl p-2 sm:p-2.5 border border-indigo-100 flex flex-col gap-0.5 truncate">
+                <h4 id="audio-title" class="text-xs sm:text-base font-extrabold text-slate-900 truncate leading-tight"></h4>
+                <div class="flex items-center gap-1.5 text-[10px] sm:text-xs text-indigo-600 font-medium">
+                  <i data-lucide="file-audio" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0"></i>
+                  <span id="audio-filename" class="font-mono truncate font-semibold"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-1.5 sm:gap-2">
+              <button onclick="prevVerse()" class="flex-1 max-w-[95px] py-2 sm:py-3 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1 border border-slate-200 active:scale-95 transition">
+                <i data-lucide="skip-back" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i><span>이전</span>
+              </button>
+              <button onclick="playCurrent()" class="flex-1 max-w-[110px] py-2 sm:py-3 px-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs flex items-center justify-center gap-1 sm:gap-1.5 shadow-md shadow-indigo-500/25 active:scale-95 transition">
+                <i data-lucide="play" class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white"></i><span>재생</span>
+              </button>
+              <button onclick="pauseAudio()" class="flex-1 max-w-[110px] py-2 sm:py-3 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs flex items-center justify-center gap-1 sm:gap-1.5 shadow-md shadow-amber-500/25 active:scale-95 transition">
+                <i data-lucide="pause" class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white"></i><span>일시정지</span>
+              </button>
+              <button onclick="nextVerse()" class="flex-1 max-w-[95px] py-2 sm:py-3 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1 border border-slate-200 active:scale-95 transition">
+                <span>다음</span><i data-lucide="skip-forward" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-1.5 sm:gap-2 bg-slate-50 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/80">
+              <div class="flex items-center justify-between text-[11px] sm:text-xs font-mono font-bold">
+                <div class="flex items-center gap-1.5 text-indigo-700">
+                  <span id="play-indicator" class="w-2 h-2 rounded-full bg-slate-400"></span>
+                  <span id="time-current" class="font-extrabold">00:00</span>
+                </div>
+                <span id="time-duration" class="text-slate-400">00:00</span>
+              </div>
+              <input type="range" id="seek-slider" min="0" max="100" value="0" step="0.1" class="slider w-full h-2 cursor-pointer">
+            </div>
+
+            <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+              <button id="btn-autoplay" onclick="toggleAutoPlay()" class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold border flex items-center gap-1 sm:gap-1.5 transition"></button>
+              <div class="flex items-center gap-1 sm:gap-1.5 bg-slate-50 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border border-slate-200 text-slate-700">
+                <i data-lucide="repeat" class="w-3.5 h-3.5 text-indigo-600"></i><span>반복 횟수:</span>
+                <select data-repeat-select class="text-[11px] sm:text-xs font-black bg-white border border-slate-300 rounded px-1 sm:px-1.5 py-0.5 text-indigo-700 outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"></select>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5 border-t border-slate-100 pt-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+                <span class="flex items-center gap-1 text-[11px] sm:text-xs">
+                  <i data-lucide="gauge" class="w-3.5 h-3.5 text-indigo-500"></i> 재생 배속:
+                  <span class="text-[10px] text-indigo-500 font-normal">(성경 0.8x / 찬송 1.0x 자동)</span>
+                </span>
+                <span class="font-mono text-[11px] sm:text-xs text-indigo-600 bg-indigo-50 px-1.5 sm:px-2 py-0.5 rounded border border-indigo-100"><span id="speed-label">0.80</span>x</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400 font-mono font-bold">0.5x</span>
+                <input type="range" id="speed-slider" min="0.5" max="2.0" step="0.05" value="0.8" class="slider flex-1 h-1.5 cursor-pointer">
+                <span class="text-[10px] text-slate-400 font-mono font-bold">2.0x</span>
+              </div>
+              <div id="speed-presets" class="flex items-center justify-between gap-1 pt-1 text-[10px] sm:text-[11px] flex-wrap"></div>
+            </div>
+
+            <audio id="player" preload="auto"></audio>
+            <div class="text-[10px] sm:text-[11px] text-slate-500 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 flex items-center justify-between">
+              <span id="audio-status" class="truncate pr-2">낭독 음원 대기 중...</span>
+              <span id="repeat-badge" class="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-indigo-50 text-indigo-700 shrink-0"></span>
+            </div>
+          </section>
+        </div>
+
+        <!-- 우측: 학습 -->
+        <div class="lg:col-span-7 flex flex-col p-2.5 sm:p-5 bg-white">
+          <div class="flex items-center justify-between pb-2 sm:pb-3 border-b border-slate-100 flex-wrap gap-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="w-1.5 h-4 sm:w-2 sm:h-5 bg-indigo-600 rounded-full"></span>
+              <h3 class="text-xs sm:text-sm font-extrabold text-slate-800">원스톱 순차 학습 & 빈칸 마스터</h3>
+            </div>
+            <div class="flex items-center gap-1.5 sm:gap-3 text-xs flex-wrap">
+              <div class="flex items-center gap-1 bg-slate-50 px-1.5 sm:px-2 py-0.5 rounded border border-slate-200 font-semibold text-slate-500">
+                <span class="text-[10px] sm:text-xs">글자:</span>
+                <button onclick="adjustFont(-1)" class="px-1 hover:text-indigo-600 font-bold text-xs" title="작게">A-</button>
+                <button onclick="adjustFont(1)" class="px-1 hover:text-indigo-600 font-bold text-xs sm:text-sm" title="크게">A+</button>
+              </div>
+              <div class="flex items-center gap-1 bg-slate-50 px-1.5 sm:px-2 py-0.5 rounded border border-slate-200 font-semibold text-slate-500">
+                <i data-lucide="align-justify" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-500"></i>
+                <span class="text-[10px] sm:text-xs">줄간격:</span>
+                <select onchange="setLineHeight(this.value)" class="text-[10px] sm:text-xs font-bold bg-white border border-slate-200 rounded px-1 py-0.5 text-slate-700 outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer">
+                  <option value="1.4">좁게</option>
+                  <option value="1.75" selected>보통</option>
+                  <option value="2.1">넓게</option>
+                  <option value="2.5">아주넓게</option>
+                </select>
+              </div>
+              <span id="score-counter" class="text-indigo-600 font-bold font-mono text-[11px] sm:text-xs">진행: 0 / 0</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200/90 rounded-xl p-2 sm:p-2.5 my-2 sm:my-3 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2.5 text-xs">
+            <div class="flex items-center gap-1">
+              <span class="font-bold text-slate-500 flex items-center gap-1 text-[10px] sm:text-[11px]"><i data-lucide="sparkles" class="w-3 h-3 text-indigo-500"></i> 방식:</span>
+              <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5 text-[11px] sm:text-xs font-semibold">
+                <button id="method-typing" class="seg" onclick="setMethod('typing')"><i data-lucide="keyboard" class="w-3 h-3"></i> 타자</button>
+                <button id="method-flash" class="seg active" onclick="setMethod('flash')"><i data-lucide="eye" class="w-3 h-3"></i> 카드</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="font-bold text-slate-500 flex items-center gap-1 text-[10px] sm:text-[11px]"><i data-lucide="gauge" class="w-3 h-3 text-amber-500"></i> 빈칸:</span>
+              <select onchange="setLevel(this.value)" class="text-[11px] sm:text-xs font-bold bg-white border border-slate-300 rounded-lg px-1.5 sm:px-2 py-0.5 text-slate-700 outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="1">1단계 (20%)</option>
+                <option value="2" selected>2단계 (35%)</option>
+                <option value="3">3단계 (50%)</option>
+                <option value="4">4단계 (70%)</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="font-bold text-slate-500 flex items-center gap-1 text-[10px] sm:text-[11px]"><i data-lucide="lightbulb" class="w-3 h-3 text-yellow-500"></i> 힌트:</span>
+              <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5 text-[10px] sm:text-xs font-semibold">
+                <button id="hint-none" class="seg" onclick="setHint('none')">숨김</button>
+                <button id="hint-first" class="seg active" onclick="setHint('first')">첫글자</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="font-bold text-slate-500 text-[10px] sm:text-[11px]">순서:</span>
+              <button id="order-seq" class="order-btn active" onclick="setOrder('seq')">순차</button>
+              <button id="order-rand" class="order-btn" onclick="setOrder('rand')">랜덤</button>
+            </div>
+            <button onclick="togglePad()" class="ml-auto px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 flex items-center gap-1 transition-all">
+              <i data-lucide="pen-tool" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>손글씨</span>
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-2.5 sm:gap-4 py-1 sm:py-2 flex-1">
+            <div class="rounded-xl sm:rounded-2xl border border-indigo-200/80 bg-gradient-to-b from-indigo-50/40 to-white p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold bg-indigo-600 text-white"><i data-lucide="globe" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i> 1. 영문 본문 (English)</span>
+                <span class="text-[10px] sm:text-[11px] text-indigo-600 font-bold bg-indigo-100 px-1.5 py-0.5 rounded">영문 암기</span>
+              </div>
+              <div id="quiz-en" class="quiz-text text-slate-800 break-words font-serif min-h-[60px]"></div>
+            </div>
+            <div class="rounded-xl sm:rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50/30 to-white p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-1.5 sm:mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold bg-amber-600 text-white"><i data-lucide="mic" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i> 2. 한글 독음 (발음 훈련)</span>
+                <span class="text-[10px] sm:text-[11px] text-amber-700 font-bold bg-amber-100 px-1.5 py-0.5 rounded">소리내어 읽기</span>
+              </div>
+              <div id="quiz-kr" class="quiz-text text-slate-800 break-words font-sans min-h-[50px]"></div>
+            </div>
+          </div>
+
+          <!-- 손글씨 연습장 -->
+          <div id="pad" class="hidden mb-2 sm:mb-4 p-2 sm:p-3 bg-white rounded-xl border border-indigo-200 shadow-sm flex flex-col gap-2">
+            <div class="flex items-center justify-between flex-wrap gap-1.5">
+              <span class="text-xs font-bold text-indigo-700 flex items-center gap-1"><i data-lucide="pen-tool" class="w-3.5 h-3.5"></i> 손글씨 암기 연습장</span>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <div class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-lg">
+                  <button onclick="setPen('#0f172a')" class="w-4 h-4 rounded-full bg-slate-900 border border-white ring-1 ring-slate-400" title="검정"></button>
+                  <button onclick="setPen('#2563eb')" class="w-4 h-4 rounded-full bg-blue-600 border border-white ring-1 ring-blue-300" title="파랑"></button>
+                  <button onclick="setPen('#dc2626')" class="w-4 h-4 rounded-full bg-red-600 border border-white ring-1 ring-red-300" title="빨강"></button>
+                </div>
+                <button id="btn-eraser" onclick="toggleEraser()" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[11px] font-semibold">지우개</button>
+                <button onclick="clearPad()" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded text-[11px] font-semibold">비우기</button>
+              </div>
+            </div>
+            <div class="w-full h-44 rounded-lg border border-slate-200 overflow-hidden cursor-crosshair note-grid-ruled bg-white">
+              <canvas id="pad-canvas" class="w-full h-full block" style="touch-action: none;"></canvas>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+            <div id="typing-actions" class="hidden flex items-center gap-2">
+              <button onclick="checkAll()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition active:scale-95 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-4 h-4"></i> 전체 채점</button>
+              <button id="btn-reveal" onclick="toggleReveal()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold transition active:scale-95">정답 확인</button>
+              <button onclick="resetQuiz()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-medium transition active:scale-95 flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> 다시풀기</button>
+            </div>
+            <div id="flash-actions" class="flex items-center gap-2">
+              <button onclick="setAllFlash(true)" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition active:scale-95 flex items-center gap-1"><i data-lucide="unlock" class="w-4 h-4"></i> 전체 열기</button>
+              <button onclick="setAllFlash(false)" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold transition active:scale-95 flex items-center gap-1"><i data-lucide="lock" class="w-4 h-4"></i> 전체 가리기</button>
+            </div>
+            <div id="result-feedback" class="text-xs font-semibold text-slate-600"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 그림 크게보기 모달 -->
+  <div id="modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex-col items-center justify-center p-3 sm:p-6" onclick="if (event.target === this) closeModal()">
+    <div class="w-full max-w-5xl flex items-center justify-between text-white pb-3 px-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+        <h3 id="modal-title" class="text-sm sm:text-base font-bold"></h3>
+        <span id="modal-zoom-percent" class="text-xs font-mono bg-white/20 px-2.5 py-0.5 rounded-full font-bold">100%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="zoom('modal', .2)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition" title="확대"><i data-lucide="zoom-in" class="w-5 h-5"></i></button>
+        <button onclick="zoom('modal', -.2)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition" title="축소"><i data-lucide="zoom-out" class="w-5 h-5"></i></button>
+        <button onclick="resetZoom('modal')" class="px-2.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-xs font-bold transition flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>기본 크기</span></button>
+        <button onclick="closeModal()" class="p-2 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 transition ml-2" title="닫기 (ESC)"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+    </div>
+    <div id="modal-viewport" class="w-full max-w-5xl flex-1 bg-black/50 rounded-2xl border border-white/10 overflow-hidden flex items-center justify-center cursor-grab" style="touch-action: none;">
+      <div class="w-full h-full flex items-center justify-center p-4 pointer-events-none">
+        <img id="modal-image" alt="그림 크게보기" class="max-w-full max-h-[75vh] object-contain transition-transform duration-75 pointer-events-none will-change-transform">
+      </div>
+    </div>
+    <p class="text-[11px] text-slate-300 pt-2 text-center">휠 또는 버튼으로 확대/축소, 드래그로 이동 (닫기: ESC)</p>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+  'use strict';
+
+  // ===================================================================
+  // 설정: 모든 파일은 index.html과 같은 폴더에 둡니다.
+  //   그림  s01.jpg ~ s25.jpg, 찬송 c00.jpg ~ c04.jpg
+  //   음원  b01.mp3 ~ b25.mp3 (끊어 읽기), j01.mp3 ~ j25.mp3 (자연스러운 읽기), c00.mp3 ~ c04.mp3
+  //   본문  아래 DATA_FILES 중 하나(엑셀) 또는 data.js
+  // GitHub Pages는 파일명 대소문자를 구분합니다 (S01.JPG ≠ s01.jpg).
+  // ===================================================================
+  const CONFIG = {
+    MEDIA_DIR: './',
+    DATA_FILES: ['data.xlsx', 'john_2.xlsx', 'john2.xlsx', 'john_3.xlsx'],
+    XLSX_LIB: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+    BIBLE_COUNT: 25,
+    HYMN_LABELS: ['전체', '1절', '2절', '3절', '4절'],
+    SPEED_BIBLE: 0.8,
+    SPEED_HYMN: 1.0,
+    SPEED_PRESETS: [0.6, 0.7, 0.8, 0.9, 1.0, 1.25],
+    // 처음 열 때 선택재생할 구절 (0부터 시작: 13절=12, 찬송 3절=25+3=28)
+    DEFAULT_SELECTED: [12, 13, 14, 28],
+    BLANK_RATIOS: { 1: 0.20, 2: 0.35, 3: 0.50, 4: 0.70 },
+  };
+  const TOTAL = CONFIG.BIBLE_COUNT + CONFIG.HYMN_LABELS.length;
+
+  // ---------- 헬퍼 ----------
+  const $ = id => document.getElementById(id);
+  const pad2 = n => String(n).padStart(2, '0');
+  const clean = v => (v == null ? '' : String(v).trim());
+  const isHymn = i => i >= CONFIG.BIBLE_COUNT;
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const shuffle = arr => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+  const mediaUrl = name => CONFIG.MEDIA_DIR + name.split('/').map(encodeURIComponent).join('/');
+
+  let iconsQueued = false;
+  function refreshIcons() {
+    if (iconsQueued || !window.lucide) return;
+    iconsQueued = true;
+    requestAnimationFrame(() => { iconsQueued = false; lucide.createIcons(); });
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function toast(message, type = 'info') {
+    const el = document.createElement('div');
+    const bg = { success: 'bg-emerald-600', error: 'bg-rose-600' }[type] || 'bg-slate-800';
+    el.className = `${bg} text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg transition-all duration-300 opacity-0 translate-y-2`;
+    el.textContent = message;
+    $('toast-container').appendChild(el);
+    requestAnimationFrame(() => el.classList.remove('opacity-0', 'translate-y-2'));
+    setTimeout(() => { el.classList.add('opacity-0', 'translate-y-2'); setTimeout(() => el.remove(), 350); }, 3000);
+  }
+
+  // ---------- 상태 ----------
+  const S = {
+    list: [],
+    cur: 12,                // 기본 13절 (0-based)
+    order: 'seq',
+    orderIdx: [],
+    scope: 'select',        // 'all' | 'select'
+    selected: new Set(CONFIG.DEFAULT_SELECTED),
+    setCycle: 0,
+    collapsed: /android|iphone|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent) && innerWidth < 768,
+
+    method: 'flash',
+    level: 2,
+    hint: 'first',
+    blanks: [],
+    revealed: false,
+    fontSize: 16,
+    lineHeight: 1.75,
+
+    channel: 'a1',          // 'a1' 끊어 읽기 | 'a2' 자연스러운 읽기
+    rate: CONFIG.SPEED_BIBLE,
+    autoPlay: true,
+    paused: false,          // 사용자가 멈춘 상태면 자동재생 금지
+    repeat: 5,
+    played: 0,
+
+    zoom: { inline: { s: 1, x: 0, y: 0 }, modal: { s: 1, x: 0, y: 0 } },
+    pen: { color: '#0f172a', width: 3, eraser: false },
+  };
+
+  // ---------- 데이터 ----------
+  function defaultMedia(i) {
+    if (isHymn(i)) { const c = 'c' + pad2(i - CONFIG.BIBLE_COUNT); return { img: c + '.jpg', a1: c + '.mp3', a2: c + '.mp3' }; }
+    const n = pad2(i + 1);
+    return { img: `s${n}.jpg`, a1: `b${n}.mp3`, a2: `j${n}.mp3` };
+  }
+
+  function labelOf(i) {
+    return isHymn(i) ? (CONFIG.HYMN_LABELS[i - CONFIG.BIBLE_COUNT] || `${i + 1}번`) : `${i + 1}절`;
+  }
+
+  // 엑셀 행 / data.js 항목을 하나의 형식으로 정규화
+  function normalize(d = {}, i) {
+    const def = defaultMedia(i);
+    const fixExt = v => clean(v).replace(',', '.');   // "b01,mp3" 같은 오타 보정
+    let img = clean(d.img), a1 = fixExt(d.a1), a2 = fixExt(d.a2);
+    if (isHymn(i)) {
+      if (!img || /^s\d/i.test(img)) img = def.img;
+      if (!a1 || /^[bj]\d/i.test(a1)) a1 = def.a1;
+      if (!a2 || /^[bj]\d/i.test(a2)) a2 = a1;
+    }
+    return {
+      label: isHymn(i) ? labelOf(i) : (clean(d.verse) || labelOf(i)),
+      img: img || def.img,
+      a1: a1 || def.a1,
+      a2: a2 || def.a2,
+      en: clean(d.en),
+      kr: clean(d.kr),
+    };
+  }
+
+  async function loadExcel() {
+    for (const file of CONFIG.DATA_FILES) {
+      try {
+        const res = await fetch(mediaUrl(file), { cache: 'no-cache' });
+        if (!res.ok) continue;
+        const buf = await res.arrayBuffer();
+        if (!window.XLSX) await loadScript(CONFIG.XLSX_LIB);
+        const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        if (rows.length) return { file, rows };
+      } catch (e) {
+        console.warn(`${file} 읽기 실패:`, e);
+      }
+    }
+    return null;
+  }
+
+  async function loadData() {
+    const excel = await loadExcel();
+    // data.js에서 window.VERSE_SEED 또는 원본 그대로의 exactBibleSeed 를 읽음
+    const seed = window.VERSE_SEED || (typeof exactBibleSeed !== 'undefined' ? exactBibleSeed : null);
+    let source;
+
+    if (excel) {
+      S.list = excel.rows.map((r, i) => normalize({
+        verse: r['구절'], img: r['그림'], a1: r['낭독'], a2: r['낭독2'], en: r['영문'], kr: r['독음'],
+      }, i));
+      source = excel.file;
+    } else if (Array.isArray(seed) && seed.length) {
+      S.list = seed.map(normalize);
+      source = 'data.js';
+    } else {
+      S.list = Array.from({ length: TOTAL }, (_, i) => normalize({}, i));
+      source = null;
+    }
+
+    $('data-led').className = `w-1.5 h-1.5 rounded-full ${source ? 'bg-emerald-500' : 'bg-rose-500'}`;
+    $('data-label').textContent = source ? `본문: ${source}` : '본문 데이터 없음';
+    if (!source) toast('본문 데이터를 찾지 못했습니다. data.js 또는 엑셀 파일을 확인하세요.', 'error');
+  }
+
+  // ---------- 재생 순서 ----------
+  function rebuildOrder() {
+    let base;
+    if (S.scope === 'select') {
+      // 성경 구절이 찬송보다 먼저, 각 범주 안에서는 번호순
+      base = [...S.selected].sort((a, b) => (isHymn(a) - isHymn(b)) || (a - b));
+    } else {
+      base = S.list.map((_, i) => i);
+    }
+    S.orderIdx = S.order === 'rand' ? shuffle(base) : base;
+    if (S.orderIdx.length && !S.orderIdx.includes(S.cur)) S.cur = S.orderIdx[0];
+  }
+
+  // ---------- 구절 선택 바 ----------
+  function verseButton(i, text) {
+    const btn = document.createElement('button');
+    const hymn = isHymn(i), active = S.cur === i;
+    let cls = 'verse-btn ';
+
+    if (S.scope === 'select') {
+      const sel = S.selected.has(i);
+      cls += sel
+        ? (hymn ? 'bg-lime-400 text-lime-950 font-black border border-lime-500 ring-2 ring-lime-400/80 scale-105 '
+                : 'bg-amber-300 text-amber-950 font-black border border-amber-400 ring-2 ring-amber-400/80 scale-105 ')
+        : (hymn ? 'bg-slate-100 hover:bg-slate-200 text-slate-400 border border-slate-300 font-semibold '
+                : 'bg-slate-200 hover:bg-slate-300 text-slate-600 border border-slate-300 font-semibold ');
+      if (active) cls += 'ring-offset-1 ring-2 ring-indigo-600 ';
+      btn.title = sel ? '클릭하면 선택 해제' : '클릭하면 선택';
+      btn.onclick = () => toggleSelect(i);
+    } else {
+      cls += active
+        ? (hymn ? 'bg-amber-600 text-white font-black scale-105 ring-2 ring-amber-300 '
+                : 'bg-indigo-600 text-white font-black scale-105 ring-2 ring-indigo-300 ')
+        : (hymn ? 'bg-amber-100/80 hover:bg-amber-200 text-amber-900 border border-amber-300 font-black active:scale-95 '
+                : 'bg-white hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 border border-slate-200 font-bold active:scale-95 ');
+      btn.title = `${titleOf(i)}(으)로 이동`;
+      btn.onclick = () => jumpTo(i);
+    }
+    btn.className = cls;
+    btn.textContent = text;
+    return btn;
+  }
+
+  function tag(html, tone) {
+    const el = document.createElement('span');
+    el.className = `tag ${tone}`;
+    el.innerHTML = html;
+    return el;
+  }
+
+  function collapseButton() {
+    const btn = document.createElement('button');
+    btn.className = 'ml-auto px-2 py-1 sm:py-0.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-extrabold flex items-center gap-1 transition-all active:scale-95 shrink-0';
+    btn.title = S.collapsed ? '구절 버튼 펼치기' : '구절 버튼 접기';
+    btn.innerHTML = `<span class="hidden sm:inline">${S.collapsed ? '펼치기' : '접기'}</span><i data-lucide="${S.collapsed ? 'chevron-down' : 'chevron-up'}" class="w-3.5 h-3.5 text-indigo-600"></i>`;
+    btn.onclick = () => { S.collapsed = !S.collapsed; renderPicker(); };
+    return btn;
+  }
+
+  const row = cls => { const d = document.createElement('div'); d.className = `flex flex-wrap items-center gap-1.5 w-full ${cls}`; return d; };
+  const hymnRange = () => Array.from({ length: S.list.length - CONFIG.BIBLE_COUNT }, (_, k) => CONFIG.BIBLE_COUNT + k);
+
+  function renderPicker() {
+    const bar = $('verse-picker');
+    const BIBLE_TONE = 'text-indigo-700 bg-indigo-50 border-indigo-200';
+    const HYMN_TONE = 'text-amber-800 bg-amber-50 border-amber-200';
+
+    if (S.collapsed) {
+      const box = row('py-0.5');
+      if (S.scope === 'select') {
+        box.appendChild(tag(`<i data-lucide="check-square" class="w-3.5 h-3.5 text-amber-600"></i><span>선택된 구절 (${S.selected.size}개):</span>`, HYMN_TONE));
+        [...S.selected].sort((a, b) => a - b).forEach(i => box.appendChild(verseButton(i, labelOf(i))));
+      } else if (isHymn(S.cur)) {
+        box.appendChild(tag('<i data-lucide="music" class="w-3.5 h-3.5 text-amber-600"></i><span>찬송가 (40장):</span>', HYMN_TONE));
+        hymnRange().forEach(i => box.appendChild(verseButton(i, labelOf(i))));
+      } else {
+        box.appendChild(tag('<i data-lucide="volume-2" class="w-3.5 h-3.5 text-indigo-600"></i><span>성경 구절:</span>', BIBLE_TONE));
+        const start = clamp(S.cur - 2, 0, CONFIG.BIBLE_COUNT - 5);
+        for (let i = start; i < start + 5; i++) box.appendChild(verseButton(i, String(i + 1)));
+      }
+      box.appendChild(collapseButton());
+      bar.replaceChildren(box);
+    } else {
+      const bible = row('pb-1 border-b border-slate-200/60');
+      bible.appendChild(tag(S.scope === 'select' ? '성경 (노랑=선택)' : '성경 (1~25절)', BIBLE_TONE));
+      for (let i = 0; i < CONFIG.BIBLE_COUNT; i++) bible.appendChild(verseButton(i, String(i + 1)));
+      bible.appendChild(collapseButton());
+
+      const hymn = row('pt-0.5');
+      hymn.appendChild(tag(S.scope === 'select' ? '찬송 (연두=선택)' : '찬송가 40장', HYMN_TONE));
+      hymnRange().forEach(i => hymn.appendChild(verseButton(i, labelOf(i))));
+      bar.replaceChildren(bible, hymn);
+    }
+    refreshIcons();
+  }
+
+  // ---------- 이동 ----------
+  const titleOf = i => isHymn(i) ? `찬송가 40장 ${labelOf(i)}` : `요한복음 2장 ${S.list[i]?.label || labelOf(i)}`;
+
+  function jumpTo(i) {
+    if (i < 0 || i >= S.list.length) return;
+    // 전체재생 모드에서 성경 ↔ 찬송 경계를 넘으면 배속 자동 전환
+    if (S.scope === 'all' && isHymn(i) !== isHymn(S.cur)) {
+      setSpeed(isHymn(i) ? CONFIG.SPEED_HYMN : CONFIG.SPEED_BIBLE);
+      toast(`${isHymn(i) ? '찬송가' : '성경 암기'} 모드: 배속 ${S.rate.toFixed(1)}x`);
+    }
+    S.cur = i;
+    render();
+  }
+
+  // auto=true: 음원이 끝나서 자동으로 넘어가는 경우
+  function nextVerse(auto = false) {
+    const list = S.orderIdx;
+    if (!list.length) return;
+    const pos = list.indexOf(S.cur);
+    if (pos !== -1 && pos < list.length - 1) return jumpTo(list[pos + 1]);
+
+    if (S.scope === 'select' && auto) {
+      S.setCycle++;
+      updateRepeatBadge();
+      if (S.setCycle >= S.repeat) {
+        pauseAudio();
+        setStatus(`선택 구절 ${S.repeat}회 세트 반복 완료`);
+        toast(`선택 구절 세트 ${S.repeat}회 반복을 마쳤습니다.`, 'success');
+        S.setCycle = 0;
+        return;
+      }
+    }
+    jumpTo(list[0]);
+  }
+
+  function prevVerse() {
+    const list = S.orderIdx;
+    if (!list.length) return;
+    const pos = list.indexOf(S.cur);
+    jumpTo(list[pos > 0 ? pos - 1 : list.length - 1]);
+  }
+
+  function setScope(mode) {
+    if (S.scope === mode) return;
+    S.scope = mode;
+    haltAudio();
+    S.setCycle = 0;
+    if (mode === 'select' && !S.selected.size) S.selected.add(S.cur);
+    $('btn-mode-all').classList.toggle('active', mode === 'all');
+    $('btn-mode-select').classList.toggle('active', mode === 'select');
+    rebuildOrder();
+    render();
+    toast(mode === 'all' ? '전체재생 모드: [재생]을 누르면 시작합니다.' : '선택재생 모드: 구절을 고른 뒤 [재생]을 누르세요.');
+  }
+
+  function toggleSelect(i) {
+    haltAudio();
+    if (S.selected.has(i)) {
+      if (S.selected.size <= 1) return toast('최소 1개 이상의 구절을 선택해야 합니다.');
+      S.selected.delete(i);
+    } else {
+      S.selected.add(i);
+    }
+    S.setCycle = 0;
+    rebuildOrder();
+    render();
+  }
+
+  function setOrder(order, notify = false) {
+    S.order = order;
+    $('order-seq').classList.toggle('active', order === 'seq');
+    $('order-rand').classList.toggle('active', order === 'rand');
+    const rand = order === 'rand';
+    const btn = $('btn-order-toggle');
+    btn.title = rand ? '현재: 랜덤 재생 (클릭하면 순차)' : '현재: 순차 재생 (클릭하면 랜덤)';
+    btn.innerHTML = `<span>${rand ? '랜덤' : '순차'}</span><i data-lucide="${rand ? 'shuffle' : 'arrow-right'}" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600"></i>`;
+    rebuildOrder();
+    if (notify) toast(rand ? '랜덤 재생으로 변경했습니다.' : '순차 재생으로 변경했습니다.');
+    render();
+  }
+
+  // ---------- 전체 렌더 ----------
+  function render() {
+    if (!S.list.length) return;
+    S.cur = clamp(S.cur, 0, S.list.length - 1);
+    const item = S.list[S.cur];
+    const pos = S.orderIdx.indexOf(S.cur) + 1;
+
+    $('badge-verse').textContent = item.label;
+    $('verse-title').textContent = titleOf(S.cur);
+    document.querySelectorAll('[data-track-pos]').forEach(el => { el.textContent = `#${pos || S.cur + 1} / ${S.orderIdx.length}`; });
+
+    renderPicker();
+    renderQuiz(item);
+    loadImage(item);
+    loadAudio(item);
+    prefetchNext();
+  }
+
+  // ---------- 빈칸 퀴즈 ----------
+  const TOKEN_SPLIT = /([\s,.;:·'"“”‘’/\[\]()?!]+)/;
+  const WORD_CHARS = /[^a-zA-Z가-힣0-9]/g;
+
+  function renderQuizSection(text, containerId, prefix) {
+    const box = $(containerId);
+    if (!text) { box.innerHTML = '<span class="text-slate-400 italic text-sm">등록된 텍스트가 없습니다.</span>'; return; }
+
+    const tokens = text.split(TOKEN_SPLIT);
+    const eligible = tokens.map((t, i) => [i, t.replace(WORD_CHARS, '')]).filter(([, w]) => w.length >= 2);
+    const count = Math.max(1, Math.round(eligible.length * CONFIG.BLANK_RATIOS[S.level]));
+    const picked = new Set(shuffle(eligible).slice(0, count).map(([i]) => i));
+    const frag = document.createDocumentFragment();
+
+    tokens.forEach((tok, idx) => {
+      if (!picked.has(idx)) {
+        tok.split('\n').forEach((line, li) => {
+          if (li) frag.appendChild(document.createElement('br'));
+          if (line) frag.appendChild(document.createTextNode(line));
+        });
+        return;
+      }
+      const answer = tok.replace(WORD_CHARS, '');
+      const hint = S.hint === 'first' ? answer[0] + '·'.repeat(answer.length - 1) : '·'.repeat(answer.length);
+      const width = `${Math.max(52, answer.length * 14 + 16)}px`;
+      const id = `${prefix}-${idx}`;
+
+      if (S.method === 'typing') {
+        const input = document.createElement('input');
+        Object.assign(input, { type: 'text', className: 'blank-input', placeholder: hint, autocomplete: 'off', spellcheck: false });
+        input.style.width = width;
+        input.dataset.answer = answer;
+        input.addEventListener('keydown', e => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          checkInput(input);
+          const k = S.blanks.findIndex(b => b.el === input);
+          if (k < S.blanks.length - 1) S.blanks[k + 1].el.focus(); else checkAll();
+        });
+        input.addEventListener('input', () => { input.classList.remove('correct', 'wrong'); updateScore(); });
+        frag.appendChild(input);
+        S.blanks.push({ id, answer, hint, el: input });
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'flash-blank-btn';
+        btn.style.minWidth = width;
+        btn.textContent = hint;
+        const blank = { id, answer, hint, el: btn, open: false };
+        btn.addEventListener('click', () => { setFlash(blank, !blank.open); updateScore(); });
+        frag.appendChild(btn);
+        S.blanks.push(blank);
+      }
+    });
+    box.replaceChildren(frag);
+  }
+
+  function renderQuiz(item) {
+    S.blanks = [];
+    S.revealed = false;
+    $('btn-reveal').textContent = '정답 확인';
+    renderQuizSection(item.en, 'quiz-en', 'en');
+    renderQuizSection(item.kr, 'quiz-kr', 'kr');
+    $('result-feedback').textContent = '';
+    updateScore();
+  }
+
+  function setFlash(b, open) {
+    b.open = open;
+    b.el.classList.toggle('revealed', open);
+    b.el.textContent = open ? b.answer : b.hint;
+  }
+
+  function setAllFlash(open) {
+    S.blanks.forEach(b => b.open !== undefined && setFlash(b, open));
+    updateScore();
+  }
+
+  function checkInput(input) {
+    const user = input.value.trim().toLowerCase();
+    const ok = user === input.dataset.answer.toLowerCase();
+    input.classList.toggle('correct', ok);
+    input.classList.toggle('wrong', !ok && user.length > 0);
+    return ok;
+  }
+
+  function checkAll() {
+    const inputs = S.blanks.filter(b => b.el.tagName === 'INPUT');
+    const correct = inputs.filter(b => checkInput(b.el)).length;
+    const pct = Math.round(correct / (inputs.length || 1) * 100);
+    $('result-feedback').innerHTML = `<span class="text-indigo-600 font-extrabold">${correct} / ${inputs.length} 정답 (${pct}%)</span>`;
+  }
+
+  function resetQuiz() {
+    S.blanks.forEach(b => {
+      if (b.el.tagName === 'INPUT') { b.el.value = ''; b.el.classList.remove('correct', 'wrong'); }
+      else setFlash(b, false);
+    });
+    $('result-feedback').textContent = '';
+    updateScore();
+  }
+
+  function toggleReveal() {
+    S.revealed = !S.revealed;
+    if (S.revealed) {
+      S.blanks.forEach(b => { if (b.el.tagName === 'INPUT') { b.el.value = b.answer; b.el.classList.add('correct'); } });
+      updateScore();
+    } else {
+      resetQuiz();
+    }
+    $('btn-reveal').textContent = S.revealed ? '정답 가리기' : '정답 확인';
+  }
+
+  function updateScore() {
+    const done = S.blanks.filter(b => b.el.tagName === 'INPUT' ? b.el.value.trim() : b.open).length;
+    $('score-counter').textContent = `진행: ${done} / ${S.blanks.length}`;
+  }
+
+  function setMethod(m) {
+    S.method = m;
+    $('method-typing').classList.toggle('active', m === 'typing');
+    $('method-flash').classList.toggle('active', m === 'flash');
+    $('typing-actions').classList.toggle('hidden', m !== 'typing');
+    $('flash-actions').classList.toggle('hidden', m === 'typing');
+    renderQuiz(S.list[S.cur]);
+  }
+
+  function setLevel(v) { S.level = Number(v) || 2; renderQuiz(S.list[S.cur]); }
+
+  function setHint(h) {
+    S.hint = h;
+    $('hint-none').classList.toggle('active', h === 'none');
+    $('hint-first').classList.toggle('active', h === 'first');
+    renderQuiz(S.list[S.cur]);
+  }
+
+  function applyTypography() {
+    document.querySelectorAll('.quiz-text').forEach(el => {
+      el.style.fontSize = `${S.fontSize}px`;
+      el.style.lineHeight = S.lineHeight;
+    });
+  }
+  function adjustFont(d) { S.fontSize = clamp(S.fontSize + d, 12, 28); applyTypography(); }
+  function setLineHeight(v) { S.lineHeight = parseFloat(v) || 1.75; applyTypography(); }
+
+  // ---------- 오디오 ----------
+  const player = $('player');
+  const setStatus = t => { $('audio-status').textContent = t; };
+
+  function updateRepeatBadge() {
+    $('repeat-badge').textContent = S.scope === 'select'
+      ? `세트반복 ${S.setCycle} / ${S.repeat}회 (선택 ${S.orderIdx.length}개)`
+      : `${S.played} / ${S.repeat}회 완료`;
+  }
+
+  function loadAudio(item) {
+    const name = S.channel === 'a2' ? item.a2 : item.a1;
+    const channel = isHymn(S.cur) ? '찬송가' : (S.channel === 'a1' ? '끊어 읽기' : '자연스러운 읽기');
+    $('audio-title').textContent = `${titleOf(S.cur)} (${channel})`;
+    $('audio-filename').textContent = name;
+
+    S.played = 0;
+    updateRepeatBadge();
+
+    player.src = mediaUrl(name);
+    player.defaultPlaybackRate = S.rate;
+    player.playbackRate = S.rate;
+
+    if (S.paused || !S.autoPlay) { setStatus('대기 중 ([재생]을 누르세요)'); return; }
+    tryPlay();
+  }
+
+  function tryPlay() {
+    player.playbackRate = S.rate;
+    return player.play()
+      .then(() => { $('autoplay-banner').classList.add('hidden'); setStatus(`재생 중 (${S.rate}x)`); })
+      .catch(err => {
+        if (err.name === 'NotAllowedError') { $('autoplay-banner').classList.remove('hidden'); setStatus('화면을 터치하면 재생됩니다'); }
+        // AbortError(다른 구절로 이동)는 무시, 파일 없음은 'error' 이벤트에서 처리
+      });
+  }
+
+  // 사용자 조작 없이 멈춤(모드 전환 등)
+  function haltAudio() {
+    S.paused = true;
+    player.pause();
+    setStatus('정지됨 ([재생]을 누르세요)');
+  }
+
+  function playCurrent() {
+    S.paused = false;
+    // 선택재생을 처음 시작할 때는 선택 목록의 첫 구절부터
+    if (S.scope === 'select' && S.orderIdx.length && S.cur !== S.orderIdx[0] && S.played === 0 && S.setCycle === 0) {
+      return jumpTo(S.orderIdx[0]);
+    }
+    if (!player.getAttribute('src')) return toast('재생할 음원이 없습니다.');
+    tryPlay();
+  }
+
+  function pauseAudio() {
+    S.paused = true;
+    player.pause();
+    setStatus('일시정지됨');
+  }
+
+  function togglePlay() {
+    player.paused ? playCurrent() : pauseAudio();
+  }
+
+  // 헤더 재생/일시정지 토글 버튼 모양을 실제 재생 상태에 맞춤
+  function renderPlayToggle() {
+    const playing = !player.paused;
+    const btn = $('btn-play-toggle');
+    btn.classList.toggle('bg-indigo-600', !playing); btn.classList.toggle('hover:bg-indigo-700', !playing);
+    btn.classList.toggle('bg-amber-500', playing);   btn.classList.toggle('hover:bg-amber-600', playing);
+    btn.innerHTML = `<i data-lucide="${playing ? 'pause' : 'play'}" class="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white"></i><span>${playing ? '일시정지' : '재생'}</span>`;
+    refreshIcons();
+  }
+
+  function stopAudio() {
+    haltAudio();
+    player.currentTime = 0;
+  }
+
+  function toggleAutoPlay() {
+    S.autoPlay = !S.autoPlay;
+    renderAutoPlayButton();
+  }
+
+  function renderAutoPlayButton() {
+    const on = S.autoPlay;
+    const btn = $('btn-autoplay');
+    btn.classList.toggle('border-indigo-300', on); btn.classList.toggle('bg-indigo-50', on); btn.classList.toggle('text-indigo-700', on);
+    btn.classList.toggle('border-slate-200', !on); btn.classList.toggle('bg-slate-100', !on); btn.classList.toggle('text-slate-700', !on);
+    btn.innerHTML = `<i data-lucide="${on ? 'volume-2' : 'volume-x'}" class="w-3.5 h-3.5"></i><span>자동 재생 ${on ? 'ON' : 'OFF'}</span>`;
+    refreshIcons();
+  }
+
+  function setChannel(ch) {
+    S.channel = ch;
+    $('btn-ch-a1').classList.toggle('active', ch === 'a1');
+    $('btn-ch-a2').classList.toggle('active', ch === 'a2');
+    loadAudio(S.list[S.cur]);
+  }
+
+  function setRepeat(v) {
+    S.repeat = parseInt(v, 10) || 1;
+    S.setCycle = 0;
+    S.played = 0;
+    document.querySelectorAll('[data-repeat-select]').forEach(sel => { sel.value = S.repeat; });
+    updateRepeatBadge();
+  }
+
+  function setSpeed(rate) {
+    S.rate = Math.round(clamp(rate, 0.5, 2) * 100) / 100;
+    player.defaultPlaybackRate = S.rate;
+    player.playbackRate = S.rate;
+    $('speed-slider').value = S.rate;
+    $('speed-label').textContent = S.rate.toFixed(2);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', Math.abs(b.dataset.speed - S.rate) < 0.001));
+  }
+
+  const formatTime = sec => isFinite(sec) ? `${pad2(Math.floor(sec / 60))}:${pad2(Math.floor(sec % 60))}` : '00:00';
+
+  function setupAudio() {
+    const seek = $('seek-slider'), ind = $('play-indicator');
+    let seeking = false;
+
+    player.addEventListener('play', () => { ind.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse'; renderPlayToggle(); });
+    player.addEventListener('pause', () => { ind.className = 'w-2 h-2 rounded-full bg-slate-400'; renderPlayToggle(); });
+    player.addEventListener('emptied', renderPlayToggle);
+    player.addEventListener('loadedmetadata', () => { $('time-duration').textContent = formatTime(player.duration); });
+    player.addEventListener('timeupdate', () => {
+      if (!player.duration || seeking) return;
+      seek.value = player.currentTime / player.duration * 100;
+      $('time-current').textContent = formatTime(player.currentTime);
+    });
+    player.addEventListener('error', () => {
+      if (player.getAttribute('src')) setStatus(`음원 파일 없음: ${$('audio-filename').textContent}`);
+    });
+    player.addEventListener('ended', () => {
+      if (S.scope === 'select') return nextVerse(true);   // 선택재생: 구절마다 1회, 세트 단위로 반복
+      S.played++;
+      updateRepeatBadge();
+      if (S.played < S.repeat) { player.currentTime = 0; tryPlay(); }
+      else if (S.autoPlay) nextVerse(true);
+    });
+
+    seek.addEventListener('input', () => {
+      seeking = true;
+      if (player.duration) {
+        player.currentTime = seek.value / 100 * player.duration;
+        $('time-current').textContent = formatTime(player.currentTime);
+      }
+    });
+    seek.addEventListener('change', () => { seeking = false; });
+
+    $('speed-slider').addEventListener('input', e => setSpeed(parseFloat(e.target.value)));
+
+    $('speed-presets').innerHTML = CONFIG.SPEED_PRESETS.map(s =>
+      `<button class="speed-btn" data-speed="${s}">${s.toFixed(s % 1 ? (String(s).split('.')[1].length) : 1)}x${s === CONFIG.SPEED_BIBLE ? ' (성경)' : s === CONFIG.SPEED_HYMN ? ' (찬송)' : ''}</button>`
+    ).join('');
+    $('speed-presets').addEventListener('click', e => {
+      const b = e.target.closest('.speed-btn');
+      if (b) setSpeed(parseFloat(b.dataset.speed));
+    });
+
+    const options = Array.from({ length: 10 }, (_, k) => `<option value="${k + 1}">${k + 1}회</option>`).join('');
+    document.querySelectorAll('[data-repeat-select]').forEach(sel => {
+      sel.innerHTML = options;
+      sel.addEventListener('change', () => setRepeat(sel.value));
+    });
+  }
+
+  // 다음 구절 그림·음원을 브라우저 캐시에 미리 받아두기
+  const prefetched = new Set();
+  function prefetchNext() {
+    const pos = S.orderIdx.indexOf(S.cur);
+    const next = S.list[S.orderIdx[(pos + 1) % S.orderIdx.length]];
+    if (!next) return;
+    [next.img, S.channel === 'a2' ? next.a2 : next.a1].forEach(name => {
+      const url = mediaUrl(name);
+      if (prefetched.has(url)) return;
+      prefetched.add(url);
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = url;
+      document.head.appendChild(link);
+    });
+  }
+
+  // ---------- 그림 / 확대 ----------
+  const inlineImg = $('inline-image');
+
+  function loadImage(item) {
+    $('image-filename').textContent = item.img;
+    resetZoom('inline');
+    inlineImg.src = mediaUrl(item.img);
+  }
+
+  inlineImg.addEventListener('load', () => { inlineImg.classList.remove('hidden'); $('image-placeholder').classList.add('hidden'); });
+  inlineImg.addEventListener('error', () => { inlineImg.classList.add('hidden'); $('image-placeholder').classList.remove('hidden'); });
+
+  const ZOOM_LIMITS = { inline: [0.5, 4], modal: [0.4, 4.5] };
+
+  function applyZoom(which) {
+    const z = S.zoom[which];
+    const img = which === 'inline' ? inlineImg : $('modal-image');
+    img.style.transform = `translate(${z.x}px, ${z.y}px) scale(${z.s})`;
+    $(`${which}-zoom-percent`).textContent = `${Math.round(z.s * 100)}%`;
+
+    if (which === 'inline') {
+      const zoomed = z.s > 1.001;
+      const vp = $('inline-viewport');
+      vp.style.touchAction = zoomed ? 'none' : 'pan-y';
+      vp.classList.toggle('cursor-grab', zoomed);
+      vp.classList.toggle('cursor-default', !zoomed);
+      $('zoom-guide').textContent = zoomed ? '드래그: 이동 / 휠: 줌' : '확대하면 드래그로 이동할 수 있습니다 (휠/버튼 줌)';
+    }
+  }
+
+  function zoom(which, delta) {
+    const z = S.zoom[which];
+    z.s = clamp(z.s + delta, ...ZOOM_LIMITS[which]);
+    if (z.s <= 1) { z.x = 0; z.y = 0; }
+    applyZoom(which);
+  }
+
+  function resetZoom(which) {
+    Object.assign(S.zoom[which], { s: 1, x: 0, y: 0 });
+    applyZoom(which);
+  }
+
+  function setupPan(which, canDrag = () => true) {
+    const vp = $(`${which}-viewport`);
+    let drag = null;
+
+    vp.addEventListener('wheel', e => { e.preventDefault(); zoom(which, e.deltaY < 0 ? 0.15 : -0.15); }, { passive: false });
+    vp.addEventListener('pointerdown', e => {
+      if ((e.pointerType === 'mouse' && e.button !== 0) || !canDrag()) return;
+      drag = { x: e.clientX, y: e.clientY };
+      vp.setPointerCapture(e.pointerId);
+      vp.classList.add('cursor-grabbing');
+    });
+    vp.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const z = S.zoom[which];
+      z.x += e.clientX - drag.x;
+      z.y += e.clientY - drag.y;
+      drag = { x: e.clientX, y: e.clientY };
+      applyZoom(which);
+    });
+    const end = () => { drag = null; vp.classList.remove('cursor-grabbing'); };
+    vp.addEventListener('pointerup', end);
+    vp.addEventListener('pointercancel', end);
+  }
+
+  function openModal() {
+    if (inlineImg.classList.contains('hidden')) return toast('현재 구절에 표시할 그림이 없습니다.');
+    $('modal-title').textContent = `${titleOf(S.cur)} 그림`;
+    $('modal-image').src = inlineImg.src;
+    resetZoom('modal');
+    $('modal').classList.replace('hidden', 'flex');
+  }
+
+  function closeModal() { $('modal').classList.replace('flex', 'hidden'); }
+
+  // ---------- 손글씨 연습장 ----------
+  const canvas = $('pad-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    const r = canvas.getBoundingClientRect();
+    if (!r.width) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = r.width * dpr;
+    canvas.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = ctx.lineJoin = 'round';
+  }
+
+  function setupCanvas() {
+    let drawing = false;
+    const point = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    canvas.addEventListener('pointerdown', e => {
+      drawing = true;
+      canvas.setPointerCapture(e.pointerId);
+      ctx.beginPath();
+      ctx.moveTo(...point(e));
+    });
+    canvas.addEventListener('pointermove', e => {
+      if (!drawing) return;
+      ctx.globalCompositeOperation = S.pen.eraser ? 'destination-out' : 'source-over';
+      ctx.strokeStyle = S.pen.color;
+      ctx.lineWidth = S.pen.eraser ? 16 : S.pen.width;
+      ctx.lineTo(...point(e));
+      ctx.stroke();
+    });
+    ['pointerup', 'pointercancel'].forEach(t => canvas.addEventListener(t, () => { drawing = false; }));
+  }
+
+  function togglePad() {
+    const hidden = $('pad').classList.toggle('hidden');
+    if (!hidden) resizeCanvas();
+  }
+  function setPen(color) { S.pen.color = color; S.pen.eraser = false; updateEraserButton(); }
+  function toggleEraser() { S.pen.eraser = !S.pen.eraser; updateEraserButton(); }
+  function updateEraserButton() {
+    const b = $('btn-eraser');
+    b.classList.toggle('bg-indigo-600', S.pen.eraser);
+    b.classList.toggle('text-white', S.pen.eraser);
+  }
+  function clearPad() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+  // ---------- 키보드 ----------
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') return closeModal();
+    if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowLeft') prevVerse();
+    else if (e.key === 'ArrowRight') nextVerse();
+    else if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+  });
+
+  // ---------- 시작 ----------
+  async function init() {
+    setupAudio();
+    setupCanvas();
+    setupPan('inline', () => S.zoom.inline.s > 1.001);
+    setupPan('modal');
+    setSpeed(CONFIG.SPEED_BIBLE);
+    setRepeat(5);
+    renderAutoPlayButton();
+    renderPlayToggle();
+    applyTypography();
+
+    await loadData();
+    setOrder('seq');   // 순서 생성 + 첫 렌더
+    refreshIcons();
+  }
+
+  init();
+  </script>
+</body>
+</html>
