@@ -91,10 +91,10 @@
             <span id="data-label">불러오는 중...</span>
           </div>
           <div class="inline-flex rounded-xl bg-slate-100 p-0.5 border border-slate-300 items-center">
-            <button id="btn-mode-all" class="mode-btn active" onclick="setScope('all')" title="모든 구절을 차례대로 재생">
+            <button id="btn-mode-all" class="mode-btn" onclick="setScope('all')" title="모든 구절을 차례대로 재생">
               <i data-lucide="list-music" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>전체재생</span>
             </button>
-            <button id="btn-mode-select" class="mode-btn" onclick="setScope('select')" title="원하는 구절만 골라 세트로 반복 재생">
+            <button id="btn-mode-select" class="mode-btn active" onclick="setScope('select')" title="원하는 구절만 골라 세트로 반복 재생">
               <i data-lucide="check-square" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i><span>선택재생</span>
             </button>
           </div>
@@ -434,6 +434,8 @@
     SPEED_BIBLE: 0.8,
     SPEED_HYMN: 1.0,
     SPEED_PRESETS: [0.6, 0.7, 0.8, 0.9, 1.0, 1.25],
+    // 처음 열 때 선택재생할 구절 (0부터 시작: 13절=12, 찬송 3절=25+3=28)
+    DEFAULT_SELECTED: [12, 13, 14, 28],
     BLANK_RATIOS: { 1: 0.20, 2: 0.35, 3: 0.50, 4: 0.70 },
   };
   const TOTAL = CONFIG.BIBLE_COUNT + CONFIG.HYMN_LABELS.length;
@@ -479,11 +481,11 @@
   // ---------- 상태 ----------
   const S = {
     list: [],
-    cur: 9,                 // 기본 10절 (0-based)
+    cur: 12,                // 기본 13절 (0-based)
     order: 'seq',
     orderIdx: [],
-    scope: 'all',           // 'all' | 'select'
-    selected: new Set(),
+    scope: 'select',        // 'all' | 'select'
+    selected: new Set(CONFIG.DEFAULT_SELECTED),
     setCycle: 0,
     collapsed: /android|iphone|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent) && innerWidth < 768,
 
